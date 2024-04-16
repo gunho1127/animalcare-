@@ -142,5 +142,4 @@ public class BoardService {
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "게시글 삭제 성공"));
 
     }
-
 }
