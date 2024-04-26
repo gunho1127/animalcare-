@@ -36,7 +36,7 @@ public class WebSecurityConfig {
 //                .requestMatchers(PathRequest.toH2Console())
 //                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
                 .requestMatchers("/h2-console/**")
-                .requestMatchers(HttpMethod.GET, "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico");
+                .requestMatchers(HttpMethod.GET, "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico","/**");
     }
 
     @Bean
@@ -50,7 +50,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/user/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/post/{id}").permitAll()
-                .anyRequest().authenticated());
+//                .anyRequest().authenticated()); // 토큰 인증 O
+                .anyRequest().permitAll()); // 토큰 인증 X
         http
                 .exceptionHandling(authenticationManager -> authenticationManager
                             .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
