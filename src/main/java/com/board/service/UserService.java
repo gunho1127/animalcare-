@@ -68,6 +68,8 @@ public class UserService {
         // header 에 들어갈 JWT 세팅
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
 
+        response.setHeader("Cache-Control", "no-store");
+
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "로그인 성공"));
 
     }

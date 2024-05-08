@@ -45,7 +45,7 @@ public class ImageController {
 
             // 이미지 파일 경로
             Path path = Paths.get("C:/Users/skm99/OneDrive/Desktop/Img" + image.getFileName());
-            String imagePath = "C:/Users/skm99/OneDrive/Desktop/img/말티즈.jpg";
+            String imagePath = "C:/Users/skm99/OneDrive/Desktop/img/KakaoTalk_20240507_175044614.jpg";
 //                    path.toString();
 
             // 파이썬 스크립트 경로
