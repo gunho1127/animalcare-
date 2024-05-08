@@ -39,42 +39,52 @@ public class ImageController {
     }
 
         @GetMapping("/{id}")
-        public ResponseEntity<String> predictBreed(@PathVariable Long id) throws IOException {
+        public ResponseEntity<String> predictBreed(@PathVariable Long id) throws Exception {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid image ID: " + id));
 
             // 이미지 파일 경로
             Path path = Paths.get("C:/Users/skm99/OneDrive/Desktop/Img" + image.getFileName());
-            String imagePath = path.toString();
+            String imagePath = "C:/Users/skm99/OneDrive/Desktop/img/말티즈.jpg";
+//                    path.toString();
 
             // 파이썬 스크립트 경로
-            String pythonScriptPath = "C:Users/skm99/OneDrive/Desktop/품종구별2.ipynb";
+            String pythonScriptPath = "C:/Users/skm99/OneDrive/Desktop/pet.py";
 
-            // 파이썬 실행 명령
-            String[] cmd = new String[3];
-            cmd[0] = "python"; // 파이썬 버전에 따라 "python" 또는 "python3"를 사용
-            cmd[1] = pythonScriptPath;
-            cmd[2] = imagePath; // 이미지 파일 경로를 파이썬 스크립트에 인자로 전달
 
-            // 결과 초기화
             String result = "";
+            // 파이썬 실행 명령
+            String[] cmd = {"python", pythonScriptPath, imagePath};
 
-            try {
-                // 프로세스 빌더 생성 및 실행
-                ProcessBuilder pb = new ProcessBuilder(cmd);
-                Process process = pb.start();
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            Process process = pb.start();
 
-                // 스크립트의 출력 가져오기
-                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                result = in.readLine();
-            } catch (Exception e) {
-                e.printStackTrace();
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+            StringBuilder output = new StringBuilder();
+            StringBuilder errorMessage = new StringBuilder();
+
+            while ((line = in.readLine()) != null) {
+                output.append(line).append("\n");
             }
+
+            while ((line = err.readLine()) != null) {
+                errorMessage.append(line).append("\n");
+            }
+
+            int exitCode = process.waitFor();
+
+//        System.out.println("Exit code: " + exitCode);
+            result = output.toString();
+//        System.out.println("Error: " + errorMessage.toString());
 
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_PLAIN)
-                    .body("Predicted breed: " + result);
+                    .body(result);
         }
+
 //    @GetMapping("/{id}")
 //    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
 //        Image image = imageRepository.findById(id)

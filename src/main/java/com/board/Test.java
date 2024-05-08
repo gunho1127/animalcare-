@@ -9,37 +9,36 @@ import java.io.*;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-    String pythonScriptPath = "C:/Users/skm99/OneDrive/Desktop/수업자료/spring boot/testSpring/src/main/java/com/board/pet.py";
+        String pythonScriptPath = "C:/Users/skm99/OneDrive/Desktop/pet.py";
+        String imagePath = "C:/Users/skm99/OneDrive/Desktop/img/KakaoTalk_20240507_175044614.jpg";
+        String[] cmd = {"python", pythonScriptPath, imagePath};
 
-    // 이미지 파일 경로
-    String imagePath = "C:/Users/skm99/OneDrive/Desktop/img/KakaoTalk_20240507_175044614.jpg";
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        Process process = pb.start();
 
-    // 파이썬 실행 명령
-    String[] cmd = new String[3];
-    cmd[0] = "python"; // 파이썬 버전에 따라 "python" 또는 "python3"를 사용
-    cmd[1] = pythonScriptPath;
-    cmd[2] = imagePath; // 이미지 파일 경로를 파이썬 스크립트에 인자로 전달
+        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-    // 프로세스 빌더 생성 및 실행
-    ProcessBuilder pb = new ProcessBuilder(cmd);
-    Process process = pb.start();
+        String line;
+        StringBuilder output = new StringBuilder();
+        StringBuilder errorMessage = new StringBuilder();
 
-    // 스크립트의 출력 가져오기
-    BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        while ((line = in.readLine()) != null) {
+            output.append(line).append("\n");
+        }
 
-    // 프로세스 종료 대기
-    int exitCode = process.waitFor();
+        while ((line = err.readLine()) != null) {
+            errorMessage.append(line).append("\n");
+        }
 
-    // 출력 및 오류 메시지 읽기
-    String ret = in.readLine();
-    String errMessage = err.readLine();
+        int exitCode = process.waitFor();
 
-    System.out.println("Exit code: " + exitCode);
-    System.out.println("Output: " + ret);
-    System.out.println("Error: " + errMessage);
+        System.out.println("Exit code: " + exitCode);
+        System.out.println("Output: " + output.toString());
+        System.out.println("Error: " + errorMessage.toString());
+    }
 }
-}
+
 
 //    public static void main(String[] args) throws Exception {
 //        // 파이썬 스크립트 경로
