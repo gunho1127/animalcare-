@@ -3,6 +3,7 @@ package com.board.service;
 import com.board.common.ApiResponseDto;
 import com.board.common.ResponseUtils;
 import com.board.common.SuccessResponse;
+import com.board.common.TokenResponse;
 import com.board.dto.LoginRequestDto;
 import com.board.dto.SignupRequestDto;
 import com.board.entity.User;
@@ -55,7 +56,7 @@ public class UserService {
 
     // 로그인
     @Transactional(readOnly = true)
-    public ApiResponseDto<SuccessResponse> login(LoginRequestDto requestDto, HttpServletResponse response) {
+    public ApiResponseDto<TokenResponse> login(LoginRequestDto requestDto, HttpServletResponse response) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
@@ -64,13 +65,23 @@ public class UserService {
         if (user.isEmpty() || !passwordEncoder.matches(password, user.get().getPassword())) {
             throw new RestApiException(ErrorType.NOT_MATCHING_INFO);
         }
+        String token = jwtUtil.createToken(user.get().getUsername(), user.get().getRole());
+
+        // JWT 토큰을 HTTP 응답 헤더에 추가
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+
+        // Cache-Control 헤더 설정
+        response.setHeader("Cache-Control", "public");
+
+        // 토큰을 ApiResponseDto에 추가하여 반환
+        return ResponseUtils.ok(TokenResponse.of(HttpStatus.OK, "로그인 성공", token));
 
         // header 에 들어갈 JWT 세팅
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
-
-        response.setHeader("Cache-Control", "no-store");
-
-        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "로그인 성공"));
+//        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
+//
+//        response.setHeader("Cache-Control", "public");
+//
+//        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "로그인 성공", token));
 
     }
 

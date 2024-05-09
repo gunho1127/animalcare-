@@ -2,6 +2,7 @@ package com.board.controller;
 
 import com.board.common.ApiResponseDto;
 import com.board.common.SuccessResponse;
+import com.board.common.TokenResponse;
 import com.board.dto.LoginRequestDto;
 import com.board.dto.SignupRequestDto;
 import com.board.security.UserDetailsImpl;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponseDto<SuccessResponse> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+    public ApiResponseDto<TokenResponse> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         return userService.login(requestDto, response);
     }
 
