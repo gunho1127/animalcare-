@@ -43,11 +43,11 @@ public class ImageController {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid image ID: " + id));
 
             // 이미지 파일 경로
-            Path path = Paths.get("C:/Users/skm99/OneDrive/Desktop/Img/" + image.getFileName());
+            Path path = Paths.get("/home/ubuntu/animalcareplus/image/" + image.getFileName());
             String imagePath = path.toString();
 
             // 파이썬 스크립트 경로
-            String pythonScriptPath = "C:/Users/skm99/OneDrive/Desktop/pet.py";
+            String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/pet.py";
 
             String result = "";
             // 파이썬 실행 명령
@@ -86,6 +86,55 @@ public class ImageController {
                     .body(result);
         }
 
+
+    @GetMapping("/img/{id}")
+    public ResponseEntity<String> predictBreed2(@PathVariable Long id) throws Exception {
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid image ID: " + id));
+
+        // 이미지 파일 경로
+        Path path = Paths.get("/home/ubuntu/animalcareplus/image/" + image.getFileName());
+        String imagePath = path.toString();
+
+        // 파이썬 스크립트 경로
+        String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/SkinDisease.py";
+
+        String result = "";
+        // 파이썬 실행 명령
+        String[] cmd = {"python", pythonScriptPath, imagePath};
+
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        Process process = pb.start();
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+        String line;
+        StringBuilder output = new StringBuilder();
+        StringBuilder errorMessage = new StringBuilder();
+
+        String lastLine = null;
+        while ((line = in.readLine()) != null) {
+            output.append(line).append("\n");
+            lastLine = line; // 각 줄을 읽을 때마다 마지막 줄을 갱신합니다.
+        }
+
+        result = lastLine; // 마지막으로 읽은 줄을 결과로 설정합니다.
+
+        while ((line = err.readLine()) != null) {
+            errorMessage.append(line).append("\n");
+        }
+
+        int exitCode = process.waitFor();
+
+        System.out.println("Exit code: " + exitCode);
+//            result = output.toString();
+        System.out.println("Error: " + errorMessage.toString());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(result);
+    }
 //    @GetMapping("/{id}")
 //    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
 //        Image image = imageRepository.findById(id)
