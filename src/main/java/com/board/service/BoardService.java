@@ -70,6 +70,7 @@ public class BoardService {
 
     }
 
+
     // 선택된 게시글 조회
     @Transactional(readOnly = true)
     public ApiResponseDto<BoardResponseDto> getPost(Long id) {
@@ -140,6 +141,5 @@ public class BoardService {
         // 게시글 id 와 사용자 정보 일치한다면, 게시글 수정
         boardRepository.deleteById(id);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "게시글 삭제 성공"));
-
     }
 }

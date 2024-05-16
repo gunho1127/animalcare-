@@ -18,6 +18,7 @@ public class BoardResponseDto {
     private Integer likeCount;
     private List<CommentResponseDto> commentList;
 
+
     @Builder
     private BoardResponseDto(Board entity, List<CommentResponseDto> list) {
         this.id = entity.getId();

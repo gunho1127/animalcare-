@@ -24,7 +24,7 @@ public class BoardController {
         return boardService.getPosts();
     }
 
-    // 게시글 작성
+     //게시글 작성
     @PostMapping("/api/post")
     public ApiResponseDto<BoardResponseDto> createPost(@RequestBody BoardRequestsDto requestsDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.createPost(requestsDto, userDetails.getUser());

@@ -17,5 +17,4 @@ public class ResponseUtils {
                 .error(response)
                 .build();
     }
-
 }
