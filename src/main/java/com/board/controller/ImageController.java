@@ -1,6 +1,5 @@
 package com.board.controller;
 
-import com.board.common.ApiResponseDto;
 import com.board.entity.Image;
 import com.board.repository.ImageRepository;
 import org.springframework.http.MediaType;
@@ -12,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.LinkedList;
 
 @RestController
 public class ImageController {
@@ -89,7 +91,7 @@ public class ImageController {
         String imagePath = paths.toString();
 
         // 파이썬 스크립트 경로
-        String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/pet.py";
+        String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/SkinDisease.py";
 
 
         String result = "";
@@ -128,7 +130,55 @@ public class ImageController {
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(result);
     }
-//
+
+    @GetMapping("/api/images/report")
+    public ResponseEntity<String> report() throws IOException, InterruptedException {
+        // 파이썬 스크립트 경로
+        String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/news.py";
+
+        // 파이썬 실행 명령
+        String[] cmd = {"python", pythonScriptPath};
+
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        Process process = pb.start();
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        BufferedReader err = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+//        String result = "";
+        String line;
+        StringBuilder output = new StringBuilder();
+        StringBuilder errorMessage = new StringBuilder();
+
+        LinkedList<String> lastLines = new LinkedList<>();
+        while ((line = in.readLine()) != null) {
+            if (lastLines.size() == 3) {
+                lastLines.removeFirst();
+            }
+            lastLines.addLast(line);
+        }
+
+        while ((line = err.readLine()) != null) {
+            errorMessage.append(line).append("\n");
+        }
+
+        int exitCode = process.waitFor();
+
+        // 마지막 3줄을 하나의 문자열로 합칩니다.
+        StringBuilder resultBuilder = new StringBuilder();
+        for (String lastLine : lastLines) {
+            resultBuilder.append(lastLine).append("\n");
+        }
+        String result = resultBuilder.toString().trim(); // 마지막에 불필요한 개행 문자를 제거합니다.
+
+//        System.out.println("Exit code: " + exitCode);
+//            result = output.toString();
+//        System.out.println("Error: " + errorMessage.toString());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(result);
+    }
 
     private String getFileExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf(".");
