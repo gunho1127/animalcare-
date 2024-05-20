@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.LinkedList;
 
@@ -42,7 +40,7 @@ public class ImageController {
 
         String result = "";
         // 파이썬 실행 명령
-        String[] cmd = {"python", pythonScriptPath, imagePath};
+        String[] cmd = {"python3", pythonScriptPath, imagePath};
 
         ProcessBuilder pb = new ProcessBuilder(cmd);
         Process process = pb.start();
@@ -96,7 +94,7 @@ public class ImageController {
 
         String result = "";
         // 파이썬 실행 명령
-        String[] cmd = {"python", pythonScriptPath, imagePath};
+        String[] cmd = {"python3", pythonScriptPath, imagePath};
 
         ProcessBuilder pb = new ProcessBuilder(cmd);
         Process process = pb.start();
@@ -137,7 +135,7 @@ public class ImageController {
         String pythonScriptPath = "/home/ubuntu/animalcareplus/python_ai/news.py";
 
         // 파이썬 실행 명령
-        String[] cmd = {"python", pythonScriptPath};
+        String[] cmd = {"python3", pythonScriptPath};
 
         ProcessBuilder pb = new ProcessBuilder(cmd);
         Process process = pb.start();
