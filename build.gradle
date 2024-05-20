@@ -34,6 +34,8 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-exec:1.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.apache.httpcomponents:httpclient'
 }
 
 tasks.named('test') {
